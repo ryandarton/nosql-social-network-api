@@ -26,4 +26,19 @@ router.get('/:thoughtId', async (req, res) => {
   }
 });
 
+// POST to create a new thought
+router.post('/', async (req, res) => {
+  try {
+    const thought = await Thought.create(req.body);
+    const user = await User.findOneAndUpdate({ _id: req.body.userId }, { $push: { thoughts: thought._id } }, { new: true });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(thought);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
