@@ -37,4 +37,18 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT to update a user by _id
+router.put('/:userId', async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate({ _id: req.params.userId }, req.body, { new: true });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
